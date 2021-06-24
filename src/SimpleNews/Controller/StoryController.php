@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace App\SimpleNews\Controller;
 
 use App\SimpleNews\ReadModel\StoryFetcher;
+use App\SimpleNews\ReadModel\StoryFilter;
 use App\SimpleNews\UseCase\Create;
 use App\SimpleNews\UseCase\Update;
+use App\SimpleNews\UseCase\Delete;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -44,4 +46,24 @@ class StoryController extends AbstractController
         return $this->json(['success' => true]);
     }
 
-} 
+    #[Route(path: '/{id}', name: 'delete', requirements: ['id' => "\d+"], methods: ['DELETE'])]
+    public function delete(int $id): JsonResponse
+    {
+        $data = ['id' => $id];
+        $this->dispatchMessage(new Delete\Command(...$data));
+
+        return $this->json(['success' => true]);
+    }
+
+    #[Route(path: '', name: 'index', methods: ['GET'])]
+    public function index(Request $request, StoryFetcher $fetcher): JsonResponse
+    {
+        foreach (['ids', 'after', 'before', 'orderBy', 'offset', 'limit'] as $key) {
+            $filterData[$key] = $request->query->get($key);
+        }
+        $filterData = array_filter($filterData);
+        $filter = new StoryFilter(...$filterData);
+
+        return $this->json($fetcher->find($filter));
+    }
+}
