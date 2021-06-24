@@ -86,4 +86,23 @@ class StoryFetcher
         return array_map(fn($row) => new StoryRow(...$row), $data);
     }
 
+    public function count(CountStoryFilter $filter): array
+    {
+        $query = $this->qb();
+        $query->select(['count(1) as count', 'Date(createdAt) as date']);
+        if (null !== $filter->after) {
+            $query->andWhere('createdAt > :after');
+            $query->setParameter(':after', $filter->after);
+        }
+
+        if (null !== $filter->before) {
+            $query->andWhere('createdAt < :before');
+            $query->setParameter(':before', $filter->before);
+        }
+        $query->groupBy('Date(createdAt)');
+
+        return array_map(fn($row) => new CountStoryRow(...$row), $query->execute()->fetchAllAssociative());
+
+    }
+
 }

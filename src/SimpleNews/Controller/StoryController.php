@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\SimpleNews\Controller;
 
+use App\SimpleNews\ReadModel\CountStoryFilter;
 use App\SimpleNews\ReadModel\StoryFetcher;
 use App\SimpleNews\ReadModel\StoryFilter;
 use App\SimpleNews\UseCase\Create;
@@ -66,4 +67,18 @@ class StoryController extends AbstractController
 
         return $this->json($fetcher->find($filter));
     }
+
+    #[Route(path: '/count', name: 'count', methods: ['GET'])]
+    public function count(Request $request, StoryFetcher $fetcher): JsonResponse
+    {
+        foreach (['after', 'before'] as $key) {
+            $countFilterData[$key] = $request->query->get($key);
+        }
+        $countFilterData = array_filter($countFilterData);
+        $filter = new CountStoryFilter(...$countFilterData);
+
+        return $this->json($fetcher->count($filter));
+    }
+
+
 }
