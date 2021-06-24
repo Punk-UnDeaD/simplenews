@@ -1,6 +1,9 @@
 version: "3"
 
 services:
+  php:
+    ports:
+      - 8888:8080
   mariadb:
     ports:
       - 33061:3306
