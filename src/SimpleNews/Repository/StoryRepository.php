@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\SimpleNews\Repository;
 
+use App\SimpleNews\Entity\Story;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityNotFoundException;
 use Doctrine\Persistence\ManagerRegistry;
@@ -26,6 +27,6 @@ class StoryRepository extends ServiceEntityRepository
         if ($story = $this->find($id)) {
             return $story;
         }
-        throw new EntityNotFoundException(Story::class, [$id]);
+        throw EntityNotFoundException::fromClassNameAndIdentifier(Story::class, [$id]);
     }
 }
