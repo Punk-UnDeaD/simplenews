@@ -30,4 +30,15 @@ return static function(ContainerConfigurator $di): void {
             ],
         ]
     );
+
+    $di->extension(
+        'framework',
+        [
+            'messenger' => [
+                'routing' => [
+                    UseCase\Create\Command::class => 'async',
+                ],
+            ],
+        ]
+    );
 };

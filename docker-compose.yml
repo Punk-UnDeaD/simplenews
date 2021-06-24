@@ -12,6 +12,11 @@ services:
       context: ./docker/php
       dockerfile: Dockerfile
     command: sh -c /worker.sh
+    volumes:
+      - .:/var/www/html
+
+  rabbitmq:
+    image: rabbitmq:3.7-management
 
   mariadb:
     image: wodby/mariadb:$MARIADB_TAG
