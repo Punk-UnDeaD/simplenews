@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\SimpleNews\Console;
 
+use App\SimpleNews\UseCase\Update\Command;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command as CliCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -34,7 +35,7 @@ class UpdateMock extends CliCommand
 
         $id = (int)$input->getArgument('id');
         $this->bus->dispatch(
-            new Update\Command(
+            new Command(
                 $id,
                 'Some news title - '.mt_rand(1000, 9999),
                 'some author - '.mt_rand(1000, 9999),
